@@ -1,5 +1,8 @@
-package UI.Swing;
+package connect4.view.SwingView;
 
+import connect4.view.HelpMessage;
+import connect4.controller.BoardController;
+import connect4.controller.Observer;
 import connect4.model.Board;
 import connect4.model.Connect4Board;
 import connect4.model.Coordinates2D;
@@ -11,7 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class View implements Observer{
+public class Application implements Observer {
     private static JFrame frame;
 
     private static BoardController controller;
@@ -22,7 +25,7 @@ public class View implements Observer{
 
     public static final Color HIGHLIGHT_COLOR = SECONDARY_COLOR;
 
-    public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;
+    public static final Color BACKGROUND_COLOR = new Color(0xf2efde);
 
     private static final Color HUMAN_COLOR = Color.YELLOW;
 
@@ -40,7 +43,7 @@ public class View implements Observer{
 
     private static final ArrayList<Slot> slots = new ArrayList<>();
 
-    public View() {
+    public Application() {
         instantiateFrame();
         controller = new BoardController(frame, this);
         startApplication();
@@ -60,6 +63,7 @@ public class View implements Observer{
         frame.add(getBoard());
         frame.add(linkButtons());
         linkColButtons();
+        menuBar();
     }
 
     private static JPanel getBoard() {
@@ -75,6 +79,7 @@ public class View implements Observer{
         grid = new JPanel(gridLayout);
         grid.setBackground(PRIMARY_COLOR);
         grid.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR, GRID_PADDING));
+        grid.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         //Fill the grid.
         for (int i = 0; i < Board.ROWS; i++) {
@@ -177,6 +182,9 @@ public class View implements Observer{
             controller.switchAction();
         });
         JButton undoBtn = new JButton("Undo");
+        undoBtn.addActionListener(e -> {
+            controller.undoAction();
+        });
         JButton quitBtn = new JButton("Quit");
         quitBtn.addActionListener(e -> {
             controller.quitAction();
@@ -196,9 +204,10 @@ public class View implements Observer{
         return buttons;
     }
 
-    private static void setBtnSize(JComponent panel) {
-        panel.setPreferredSize(BUTTON_SIZE);
-        panel.setMaximumSize(BUTTON_SIZE);
+    private static void setBtnSize(JComponent btn) {
+        btn.setPreferredSize(BUTTON_SIZE);
+        btn.setMaximumSize(BUTTON_SIZE);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
     private static void linkColButtons() {
@@ -213,6 +222,35 @@ public class View implements Observer{
                                   }
                               }
         );
+    }
+
+    private static void menuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu helpMenu = new JMenu("Help");
+        JMenuItem general = new JMenuItem("Info");
+        general.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, HelpMessage.generalHelpMessage());
+        });
+        JMenuItem move = new JMenuItem("How to place a token");
+        move.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, HelpMessage.moveHelpMessage());
+        });
+        JMenuItem win = new JMenuItem("How to win");
+        win.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, HelpMessage.winHelpMessage());
+        });
+        JMenuItem start = new JMenuItem("How to start a new game");
+        start.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, HelpMessage.startHelpMessage());
+        });
+        helpMenu.add(general);
+        helpMenu.add(move);
+        helpMenu.add(win);
+        helpMenu.add(start);
+        helpMenu.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        menuBar.add(helpMenu);
+        menuBar.setBackground(BACKGROUND_COLOR);
+        frame.setJMenuBar(menuBar);
     }
 
     @Override
@@ -265,16 +303,23 @@ public class View implements Observer{
         }
 
         State winner = board.getWinner();
-        String message;
-        switch (winner) {
-            case HUMAN -> {
-                message = "Congratulations! You won.";
+        String message = "";
+        if  (winner == null) {
+            message = "Nobody wins. Tie!";
+        } else {
+            switch (winner) {
+                case HUMAN -> {
+                    message = "Congratulations! You won.";
+                }
+                case COMPUTER -> {
+                    message = "Sorry! Machine wins.";
+                }
             }
-            case COMPUTER -> {
-                message = "Sorry! Machine wins.";
-            }
-            default -> message = "Nobody wins. Tie!";
         }
+        JOptionPane.showMessageDialog(frame, message);
+    }
+
+    public void showError(String message) {
         JOptionPane.showMessageDialog(frame, message);
     }
 }

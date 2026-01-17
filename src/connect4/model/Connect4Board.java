@@ -23,8 +23,10 @@ public class Connect4Board implements Board {
     public static final int CONNECT = 4;
     /**
      * The max difficulty level of the computer. Originally 5.
+     * The time the algorithm takes will increase exponentially
+     * with each level added.
      */
-    public static final int MAX_LEVEL = 10;
+    public static final int MAX_LEVEL = 7;
 
     /**
      * The default difficulty level of the computer. Originally 4.

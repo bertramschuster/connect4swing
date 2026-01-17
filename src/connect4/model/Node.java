@@ -53,6 +53,13 @@ public class Node {
     }
 
     /**
+     * Removes all the children of this Node.
+     */
+    public void deleteChildren() {
+        children.clear();
+    }
+
+    /**
      * Adds a child Node to {@link #children} of this Node.
      * Once a child is added it cannot be removed.
      * @param child The Node to be added to {@link #children}

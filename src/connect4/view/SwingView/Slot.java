@@ -1,6 +1,4 @@
-package UI.Swing;
-
-import connect4.model.State;
+package connect4.view.SwingView;
 
 import javax.swing.*;
 import java.awt.*;

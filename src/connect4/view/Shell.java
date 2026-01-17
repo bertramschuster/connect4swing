@@ -1,4 +1,4 @@
-package UI;
+package connect4.view;
 
 //Java imports.
 import java.io.BufferedReader;

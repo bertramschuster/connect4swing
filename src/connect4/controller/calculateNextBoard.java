@@ -1,4 +1,4 @@
-package UI.Swing;
+package connect4.controller;
 
 import connect4.model.Connect4Board;
 
@@ -17,10 +17,14 @@ public class calculateNextBoard extends Thread {
             board = board.machineMove();
             if (!this.isInterrupted()) {
                 controller.setBoard(board);
+                controller.notifyObservers();
+                controller.undo(board);
                 controller.unlock();
             }
         } catch (InterruptedException e) {
-            System.out.println("Calculation not finished");
+            System.out.println(
+                    "Thread interrupted, calculation terminated."
+            );
         }
     }
 

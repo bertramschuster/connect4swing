@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * many new tokens are placed on the board, considering that the
  * tokens are alternating between the 2 players.
  */
-public class GameTreeBuilder {
+public class GameTreeBuilder{
     /**
      * The gameTree that is built in this class.
      */
@@ -32,7 +32,8 @@ public class GameTreeBuilder {
      * @param board The initial board.
      * @param maxDepth The depth of the tree.
      */
-    public GameTreeBuilder(final Connect4Board board, final int maxDepth) {
+    public GameTreeBuilder(final Connect4Board board, final int maxDepth)
+            throws InterruptedException{
         if (maxDepth <= 0) {
             throw new IllegalArgumentException(
                     "Depth of the tree has to be positive"
@@ -55,7 +56,10 @@ public class GameTreeBuilder {
      * @return The best Node for the {@link State#COMPUTER},
      *  that is a direct child of root.
      */
-    public Node getBestNode() {
+    public Node getBestNode() throws InterruptedException {
+        if (Thread.currentThread().isInterrupted()) {
+            throw new InterruptedException();
+        }
         ArrayList<Node> nextMoves = gameTree.getRoot().getChildren();
         Node bestMove = null;
         int bestMovePoints = Integer.MIN_VALUE;
@@ -77,7 +81,11 @@ public class GameTreeBuilder {
     private void setAllChildNodes(
             final Node parent,
             final Connect4Board board,
-            final int currentLevel) {
+            final int currentLevel)
+    throws InterruptedException {
+        if (Thread.currentThread().isInterrupted()) {
+            throw new InterruptedException();
+        }
         if (currentLevel <= maxDepth) {
             if (currentLevel % 2 == 1) {
                 setChildNodes(parent, board, currentLevel, State.COMPUTER);
@@ -92,10 +100,10 @@ public class GameTreeBuilder {
             final Node parent,
             final Connect4Board board,
             final int currentLevel,
-            final State state) {
+            final State state)
+    throws InterruptedException {
         if (Thread.currentThread().isInterrupted()) {
-            //Result is not needed, if thread is interrupted.
-            return;
+            throw new InterruptedException();
         }
         for (int i = 0; i < Board.COLS; i++) {
             Connect4Board childBoard;
@@ -136,6 +144,11 @@ public class GameTreeBuilder {
                 //Computers turn => make the best possible move
                 //(take maximum points of the direct children).
                 current.setPoints(getMaxChildPoints(current) + currentPoints);
+            }
+            //Child Nodes are not needed anymore, as result is already
+            //stored in the current Node.
+            if (current.getDepth() > 1) {
+                current.deleteChildren();
             }
         }
     }

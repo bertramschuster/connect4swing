@@ -1,4 +1,4 @@
-package UI.Swing;
+package connect4.controller;
 
 import connect4.model.Connect4Board;
 
@@ -7,4 +7,5 @@ import connect4.model.Connect4Board;
  */
 public interface Observer {
     void update(Connect4Board board);
+    void showError(String message);
 }
