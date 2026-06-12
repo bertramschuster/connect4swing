@@ -1,6 +1,7 @@
 package connect4.controller;
 
-import connect4.view.SwingView.Application;
+import connect4.view.Observer;
+import connect4.view.SwingView.Connect4Swing;
 import connect4.model.Board;
 import connect4.model.Connect4Board;
 import connect4.model.State;
@@ -19,7 +20,7 @@ public class BoardController{
     calculateNextBoard nextBoard;
     private static boolean undo = false;
 
-    public BoardController(JFrame frame, Application listener) {
+    public BoardController(JFrame frame, Connect4Swing listener) {
         listeners.add(listener);
         this.frame = frame;
         board = new Connect4Board(false);

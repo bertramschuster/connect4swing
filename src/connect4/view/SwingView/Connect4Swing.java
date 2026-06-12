@@ -2,7 +2,7 @@ package connect4.view.SwingView;
 
 import connect4.view.HelpMessage;
 import connect4.controller.BoardController;
-import connect4.controller.Observer;
+import connect4.view.Observer;
 import connect4.model.Board;
 import connect4.model.Connect4Board;
 import connect4.model.Coordinates2D;
@@ -14,36 +14,88 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class Application implements Observer {
+/**
+ * Displays the current state of the board and various buttons to change
+ * its state using Java Swing.
+ */
+public class Connect4Swing implements Observer {
+    /**
+     * The JFrame where the connect4 application is displayed.
+     */
     private static JFrame frame;
-
+    /**
+     * The controller to link the swing view and the model.
+     */
     private static BoardController controller;
-
-    private static final Color PRIMARY_COLOR = new Color(0x2580f7);
-
-    public static final Color SECONDARY_COLOR = Color.WHITE;
-
-    public static final Color HIGHLIGHT_COLOR = SECONDARY_COLOR;
-
-    public static final Color BACKGROUND_COLOR = new Color(0xf2efde);
-
-    private static final Color HUMAN_COLOR = Color.YELLOW;
-
-    private static final Color COMPUTER_COLOR = Color.RED;
-
-    private static final int GRID_PADDING = 5;
-
-    private static final int BORDER_SIZE = 5;
-
-    private static final int COUNT_PADDING = 30;
-
-    private static final Dimension BUTTON_SIZE = new Dimension(90, 40);
-
+    /**
+     * List of all the {@link Slot}s of the board.
+     */
+    private static final ArrayList<Slot> slots = new ArrayList<>();
+    /**
+     * The JPanel displaying the board and the column and row indexes.
+     */
     private static JPanel grid;
 
-    private static final ArrayList<Slot> slots = new ArrayList<>();
+    //Colors:
+    /**
+     * The main color of the application.
+     * This originally effects the background of the board
+     * as well as the text of the column & row indexes.
+     * Originally blue.
+     */
+    private static final Color PRIMARY_COLOR = Color.BLUE;
+    /**
+     * The secondary color of the application.
+     * This originally effects empty Slots
+     * and the background of column and row indexes.
+     * Originally white.
+     */
+    public static final Color SECONDARY_COLOR = Color.WHITE;
+    /**
+     * Color for highlighting the witness.
+     * Originally the same as {@link #SECONDARY_COLOR}.
+     */
+    public static final Color HIGHLIGHT_COLOR = SECONDARY_COLOR;
+    /**
+     * Background color of the application.
+     * Originally effects the space around the buttons and the menu bar.
+     * Originally the same as {@link #SECONDARY_COLOR}.
+     */
+    public static final Color BACKGROUND_COLOR = SECONDARY_COLOR;
+    /**
+     * Color for all tokens placed by the human.
+     * Originally yellow.
+     */
+    private static final Color HUMAN_COLOR = Color.YELLOW;
+    /**
+     * Color for all tokens placed by the computer.
+     * Originally red.
+     */
+    private static final Color COMPUTER_COLOR = Color.RED;
 
-    public Application() {
+    //Sizes
+    /**
+     * Used for the distance between each token on the board.
+     * Originally 5.
+     */
+    private static final int GRID_PADDING = 5;
+    /**
+     * Used for the size of all borders.
+     * Originally 5.
+     */
+    private static final int BORDER_SIZE = 5;
+    /**
+     * Used for the width/height of the index counters for the board.
+     * Originally 30.
+     */
+    private static final int COUNT_PADDING = 30;
+    /**
+     * Used for all buttons.
+     * Originally 90x40
+     */
+    private static final Dimension BUTTON_SIZE = new Dimension(90, 40);
+
+    public Connect4Swing() {
         instantiateFrame();
         controller = new BoardController(frame, this);
         startApplication();

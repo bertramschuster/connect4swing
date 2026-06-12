@@ -1,4 +1,4 @@
-package connect4.controller;
+package connect4.view;
 
 import connect4.model.Connect4Board;
 
